@@ -1,4 +1,4 @@
-# GCP LLM Demo Project
+# LLM on GCP Cloud Run
 
 This project demonstrates how to deploy LLM models (specifically Gemma) to Google Cloud Platform using Cloud Run. It provides a streamlined setup process and emphasizes CPU-based inference for cost-effectiveness.
 
