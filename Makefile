@@ -1,13 +1,13 @@
 # GCP LLM Demo Project Makefile
 
-# 變數定義
+# Variable definitions
 PROJECT_ID := $(shell gcloud config get-value project)
 REGION := asia-southeast1
 REPOSITORY := llm-models
 SERVICE_NAME := ollama-backend
 IMAGE_NAME := $(REGION)-docker.pkg.dev/$(PROJECT_ID)/$(REPOSITORY)/ollama-backend:latest
 
-# 顏色定義
+# Color definitions
 GREEN := \033[0;32m
 YELLOW := \033[0;33m
 RED := \033[0;31m
@@ -15,53 +15,54 @@ NC := \033[0m # No Color
 
 .PHONY: help setup build deploy describe destroy clean
 
-# 預設目標：顯示幫助
+# Default target: Display help
 help:
-	@echo "$(GREEN)GCP LLM Demo Project 使用方法:$(NC)"
-	@echo "  make setup     - 設定專案環境與啟用必要的 GCP API"
-	@echo "  make build     - 建置容器映像"
-	@echo "  make deploy    - 將容器部署到 Cloud Run (需要 GPU 配額)"
-	@echo "  make describe  - 顯示已部署服務的詳細資訊"
-	@echo "  make destroy   - 清除所有資源"
-	@echo "  make clean     - 清除本地暫存檔案"
+	@echo "$(GREEN)GCP LLM Demo Project Usage:$(NC)"
+	@echo "  make setup     - Set up the project environment and enable required GCP APIs"
+	@echo "  make build     - Build the container image"
+	@echo "  make deploy    - Deploy the container to Cloud Run (requires GPU quota)"
+	@echo "  make describe  - Show details of the deployed service"
+	@echo "  make destroy   - Remove all resources"
+	@echo "  make clean     - Remove local temporary files"
 	@echo ""
-	@echo "$(YELLOW)專案資訊:$(NC)"
-	@echo "  專案 ID: $(PROJECT_ID)"
-	@echo "  區域: $(REGION)"
-	@echo "  容器映像: $(IMAGE_NAME)"
 
-# 設定專案環境
+	@echo "$(YELLOW)Project Information:$(NC)"
+	@echo "  Project ID: $(PROJECT_ID)"
+	@echo "  Region: $(REGION)"
+	@echo "  Container Image: $(IMAGE_NAME)"
+
+# Set up the project environment
 setup:
-	@echo "$(GREEN)正在設定專案環境...$(NC)"
+	@echo "$(GREEN)Setting up the project environment...$(NC)"
 	@python scripts/setup_project.py
 
-# 建置容器映像
+# Build the container image
 build:
-	@echo "$(GREEN)正在建置容器映像...$(NC)"
-	@echo "$(YELLOW)注意：此過程可能需要 30 分鐘以上$(NC)"
+	@echo "$(GREEN)Building the container image...$(NC)"
+	@echo "$(YELLOW)Note: This process may take over 30 minutes$(NC)"
 	@gcloud builds submit --config=cloudbuild.yaml
 
-# 部署到 Cloud Run
+# Deploy to Cloud Run
 deploy:
-	@echo "$(GREEN)正在部署到 Cloud Run...$(NC)"
+	@echo "$(GREEN)Deploying to Cloud Run...$(NC)"
 	@chmod +x bin/deploy.sh
 	@bin/deploy.sh
 
-# 顯示已部署服務的詳細資訊
+# Show deployed service details
 describe:
-	@echo "$(GREEN)服務詳細資訊:$(NC)"
+	@echo "$(GREEN)Service Details:$(NC)"
 	@gcloud run services describe $(SERVICE_NAME) --region $(REGION)
 
-# 清除所有資源
+# Remove all resources
 destroy:
-	@echo "$(RED)警告：將要清除所有資源!$(NC)"
+	@echo "$(RED)Warning: This will remove all resources!$(NC)"
 	@chmod +x bin/destroy.sh
 	@bin/destroy.sh
 
-# 清除本地暫存檔案
+# Remove local temporary files
 clean:
-	@echo "$(GREEN)正在清除本地暫存檔案...$(NC)"
+	@echo "$(GREEN)Cleaning up local temporary files...$(NC)"
 	@find . -name "__pycache__" -type d -exec rm -rf {} +
 	@find . -name "*.pyc" -delete
 	@find . -name ".DS_Store" -delete
-	@echo "$(GREEN)清除完成!$(NC)"
+	@echo "$(GREEN)Cleanup complete!$(NC)"
