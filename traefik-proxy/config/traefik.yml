@@ -1,0 +1,21 @@
+global:
+  checkNewVersion: true
+  sendAnonymousUsage: false
+
+api:
+  dashboard: true
+  insecure: true
+
+entryPoints:
+  traefik:
+    address: ":8087"
+  http:
+    address: ":8088"
+  web:
+    address: ":11434"
+
+providers:
+  file:
+    directory: "./dynamic"
+    watch: true
+# --api --api.insecure=true --entrypoints.http.address=:8787

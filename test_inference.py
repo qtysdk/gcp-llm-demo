@@ -13,7 +13,7 @@ import os
 
 def start_proxy():
     """Start the Cloud Run proxy in a separate thread"""
-    command = "gcloud run services proxy ollama-gemma --port=8080 --region asia-southeast1"
+    command = "gcloud run services proxy ollama-backend --port=8080 --region asia-southeast1"
     print("Starting Cloud Run proxy...")
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     return process

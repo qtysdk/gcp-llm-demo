@@ -1,0 +1,22 @@
+http:
+  routers:
+    ollama-backend:
+      rule: "Host(`localhost`)"
+      service: ollama-service
+      entryPoints:
+        - web
+      middlewares:
+        - gcloud-auth
+
+  middlewares:
+    gcloud-auth:
+      headers:
+        customRequestHeaders:
+          Authorization: "Bearer {{ env `GOOGLE_AUTH_TOKEN` }}"
+          Host: "{{ env `OLLAMA_SERVICE_HOST` }}"
+
+  services:
+    ollama-service:
+      loadBalancer:
+        servers:
+          - url: "https://{{ env `OLLAMA_SERVICE_HOST` }}"

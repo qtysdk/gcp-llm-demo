@@ -92,10 +92,72 @@ make destroy
 
 **WARNING: This command will permanently delete all resources created by this project.  Double-check before running!**
 
+## Using Traefik Proxy
+
+This project includes a Traefik proxy configuration that simplifies interactions with the Cloud Run service. Traefik provides a local proxy that handles Cloud Run authentication issues for you.
+
+### When to use Traefik vs gcloud proxy
+
+- **Traefik proxy**: Recommended for production-like testing and scenarios with high request volumes. It efficiently handles authentication and routing without rate limiting issues.
+
+- **gcloud service proxy**: Suitable for quick proof-of-concept testing but may encounter HTTP 429 (Too Many Requests) errors with high traffic volumes due to built-in rate limiting.
+
+### Setup and Launch
+
+1. **Ensure the Cloud Run service is deployed**:
+   ```bash
+   make deploy
+   ```
+
+2. **Start the Traefik proxy**:
+   ```bash
+   cd traefik-proxy/scripts
+   chmod +x start-traefik.sh
+   ./start-traefik.sh
+   ```
+
+3. **Access services**:
+   - Traefik dashboard: http://localhost:8087
+   - Ollama API endpoint: http://localhost:11434
+
+### Usage Examples
+
+Once the Traefik proxy is running, you can access the Ollama API directly through local endpoints:
+
+```bash
+curl -X POST http://localhost:11434/api/generate -d '{
+  "model": "codellama:7b",
+  "prompt": "Write a Python function to calculate fibonacci numbers"
+}'
+```
+
+Or using Python:
+
+```python
+import requests
+
+response = requests.post("http://localhost:11434/api/generate", json={
+    "model": "codellama:7b",
+    "prompt": "Write a Python function to calculate fibonacci numbers"
+})
+
+print(response.json())
+```
+
+### Architecture Details
+
+The Traefik proxy configuration includes the following components:
+
+- `config/traefik.yml`: Main configuration file defining API, entry points, and providers
+- `dynamic/ollama.yml`: Dynamic routing configuration handling Cloud Run authentication and service routing
+- `scripts/start-traefik.sh`: Startup script that sets environment variables and launches the Traefik service
+
+The proxy automatically handles Google Cloud authentication, so you don't need to manage tokens manually.
+
 ## Additional
 
 Create a proxy and setup it to OpenWebUI:
 
 ```
-gcloud run services proxy ollama-gemma --region asia-southeast1 --port 11434
+gcloud run services proxy ollama-backend --region asia-southeast1 --port 11434
 ```

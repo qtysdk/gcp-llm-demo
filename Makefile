@@ -4,8 +4,8 @@
 PROJECT_ID := $(shell gcloud config get-value project)
 REGION := asia-southeast1
 REPOSITORY := llm-models
-SERVICE_NAME := ollama-gemma
-IMAGE_NAME := $(REGION)-docker.pkg.dev/$(PROJECT_ID)/$(REPOSITORY)/ollama-gemma:latest
+SERVICE_NAME := ollama-backend
+IMAGE_NAME := $(REGION)-docker.pkg.dev/$(PROJECT_ID)/$(REPOSITORY)/ollama-backend:latest
 
 # 顏色定義
 GREEN := \033[0;32m

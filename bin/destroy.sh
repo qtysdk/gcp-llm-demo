@@ -24,7 +24,7 @@ print_error() {
 PROJECT_ID=$(gcloud config get-value project)
 REGION="asia-southeast1"
 REPOSITORY="llm-models"
-SERVICE_NAME="ollama-gemma"
+SERVICE_NAME="ollama-backend"
 
 print_info "開始清除在專案 '$PROJECT_ID' 中的資源..."
 
@@ -48,7 +48,7 @@ fi
 
 # 檢查並刪除 Artifact Registry 中的映像
 print_info "檢查 Artifact Registry 中的映像..."
-REPO_PATH="$REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/ollama-gemma"
+REPO_PATH="$REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/ollama-backend"
 
 if gcloud artifacts repositories describe $REPOSITORY --location $REGION &> /dev/null; then
     # 檢查映像是否存在
